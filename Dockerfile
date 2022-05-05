@@ -1,8 +1,8 @@
-FROM viktorstrate/photoview:2.3.0
+FROM viktorstrate/photoview:2.3.9
 
 # Install mariadb mysql database server
 RUN apt-get update \
-  && apt-get install -y mariadb-server wget sqlite3 apache2-utils \
+  && apt-get install -y mariadb-server wget sqlite3 apache2-utils curl \
   # Cleanup
   && apt-get autoremove -y \
   && apt-get clean \
@@ -15,5 +15,9 @@ ADD ./reset-admin.sh /usr/local/bin/reset-admin.sh
 RUN chmod a+x /usr/local/bin/reset-admin.sh
 ADD ./docker_entrypoint.sh /app/docker_entrypoint.sh
 RUN chmod a+x /app/docker_entrypoint.sh
+COPY ./health-check.sh /usr/local/bin/health-check.sh
+RUN chmod a+x /usr/local/bin/health-check.sh
+COPY ./migration-from-lt-2-3-9.sh /usr/local/bin/migration-from-lt-2-3-9.sh
+RUN chmod a+x /usr/local/bin/migration-from-lt-2-3-9.sh
 
 ENTRYPOINT ["/app/docker_entrypoint.sh"]
